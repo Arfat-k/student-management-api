@@ -1,7 +1,7 @@
 # 🎓 Student Management REST API
 
 A fully secured, production-ready REST API built with Spring Boot, featuring JWT authentication, role-based access control, Redis caching, and Docker deployment.
-
+![CI/CD](https://github.com/Arfat-k/student-management-api/actions/workflows/ci-cd.yml/badge.svg)
 ![Java](https://img.shields.io/badge/Java-17-orange)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.14-green)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue)
