@@ -1,5 +1,5 @@
 package com.example.student_management.controller;
-
+import jakarta.validation.Valid;
 import com.example.student_management.model.Student;
 import com.example.student_management.service.StudentService;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +30,7 @@ public class StudentController {
 
     // POST create student
     @PostMapping
-    public ResponseEntity<Student> createStudent(@RequestBody Student student) {
+    public ResponseEntity<Student> createStudent(@Valid @RequestBody Student student) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(studentService.createStudent(student));
     }
@@ -38,7 +38,7 @@ public class StudentController {
     // PUT update student
     @PutMapping("/{id}")
     public ResponseEntity<Student> updateStudent(@PathVariable Long id,
-                                                 @RequestBody Student student) {
+                                                 @Valid @RequestBody Student student) {
         return ResponseEntity.ok(studentService.updateStudent(id, student));
     }
 

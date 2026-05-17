@@ -1,6 +1,7 @@
 package com.example.student_management.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import lombok.Data;
 
 @Data
@@ -12,18 +13,21 @@ public class Student {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @NotBlank(message = "First name is required")
     private String firstName;
 
-    @Column(nullable = false)
+    @NotBlank(message = "Last name is required")
     private String lastName;
 
+    @NotBlank(message = "Email is required")
+    @Email(message = "Invalid email format")
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(nullable = false)
+    @NotBlank(message = "Phone is required")
+    @Size(min = 10, max = 15, message = "Phone must be 10-15 characters")
     private String phone;
 
-    @Column(nullable = false)
+    @NotBlank(message = "Course is required")
     private String course;
 }
