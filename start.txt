@@ -1,0 +1,1 @@
+ssh -i "student-key.pem" ubuntu@44.204.219.28
