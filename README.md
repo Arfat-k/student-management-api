@@ -1,6 +1,6 @@
 # 🎓 Student Management REST API
 
-A fully secured, production-ready REST API built with Spring Boot, featuring JWT authentication, role-based access control, Redis caching, Docker deployment, Kubernetes orchestration, and CI/CD pipeline.
+A fully secured, production-ready REST API built with Spring Boot, featuring JWT authentication, role-based access control, Redis caching, Docker deployment, Kubernetes orchestration, CI/CD pipeline, and AWS deployment with Terraform.
 
 ![CI/CD](https://github.com/Arfat-k/student-management-api/actions/workflows/ci-cd.yml/badge.svg)
 ![Java](https://img.shields.io/badge/Java-17-orange)
@@ -9,6 +9,15 @@ A fully secured, production-ready REST API built with Spring Boot, featuring JWT
 ![Redis](https://img.shields.io/badge/Redis-7-red)
 ![Docker](https://img.shields.io/badge/Docker-Compose-blue)
 ![Kubernetes](https://img.shields.io/badge/Kubernetes-K8s-326CE5)
+![Terraform](https://img.shields.io/badge/Terraform-IaC-7B42BC)
+![AWS](https://img.shields.io/badge/AWS-EC2-FF9900)
+
+---
+
+## 🌍 Live API
+```
+http://18.204.23.153:8080
+```
 
 ---
 
@@ -23,6 +32,8 @@ A fully secured, production-ready REST API built with Spring Boot, featuring JWT
 - ✅ Kubernetes deployment (K8s)
 - ✅ CI/CD pipeline with GitHub Actions
 - ✅ Docker image published to Docker Hub
+- ✅ AWS EC2 deployment with Terraform
+- ✅ Infrastructure as Code (IaC)
 - ✅ 6 unit tests with JUnit 5 & Mockito
 
 ---
@@ -41,6 +52,8 @@ A fully secured, production-ready REST API built with Spring Boot, featuring JWT
 | Kubernetes (K8s) | Container orchestration |
 | GitHub Actions | CI/CD pipeline |
 | Docker Hub | Container registry |
+| Terraform | Infrastructure as Code |
+| AWS EC2 | Cloud deployment |
 | JUnit 5 + Mockito | Unit testing |
 | Lombok | Boilerplate reduction |
 | Maven | Build tool |
@@ -53,35 +66,38 @@ A fully secured, production-ready REST API built with Spring Boot, featuring JWT
 student-management/
 ├── .github/
 │   └── workflows/
-│       └── ci-cd.yml           # GitHub Actions pipeline
-├── k8s/
-│   ├── app-deployment.yaml     # K8s app deployment
-│   ├── postgres-deployment.yaml # K8s postgres deployment
-│   └── redis-deployment.yaml   # K8s redis deployment
-├── src/main/java/com/example/student_management/
-│   ├── config/
-│   │   ├── RedisConfig.java
-│   │   └── SecurityConfig.java
-│   ├── controller/
-│   │   ├── AuthController.java
-│   │   └── StudentController.java
-│   ├── exception/
-│   │   └── GlobalExceptionHandler.java
-│   ├── model/
-│   │   ├── Student.java
-│   │   └── User.java
-│   ├── repository/
-│   │   ├── StudentRepository.java
-│   │   └── UserRepository.java
-│   ├── security/
-│   │   ├── JwtAuthFilter.java
-│   │   └── JwtUtil.java
-│   └── service/
-│       └── StudentService.java
-├── Dockerfile
-├── docker-compose.yml
-├── postman-collection.json
-└── pom.xml
+│       └── ci-cd.yml                    # GitHub Actions CI/CD pipeline
+├── terraform/
+│   ├── main.tf                          # AWS EC2 + Security Group
+│   ├── variables.tf                     # Reusable variables
+│   └── outputs.tf                       # Output EC2 public IP
+├── src/
+│   ├── main/java/com/example/student_management/
+│   │   ├── config/
+│   │   │   ├── RedisConfig.java         # Redis cache configuration
+│   │   │   └── SecurityConfig.java      # JWT security configuration
+│   │   ├── controller/
+│   │   │   ├── AuthController.java      # Register & Login endpoints
+│   │   │   └── StudentController.java   # CRUD endpoints
+│   │   ├── exception/
+│   │   │   └── GlobalExceptionHandler.java  # Global error handling
+│   │   ├── model/
+│   │   │   ├── Student.java             # Student entity
+│   │   │   └── User.java               # User entity
+│   │   ├── repository/
+│   │   │   ├── StudentRepository.java   # Student DB operations
+│   │   │   └── UserRepository.java      # User DB operations
+│   │   ├── security/
+│   │   │   ├── JwtAuthFilter.java       # JWT request interceptor
+│   │   │   └── JwtUtil.java            # JWT generate & validate
+│   │   └── service/
+│   │       └── StudentService.java      # Business logic + caching
+│   └── test/
+│       └── StudentServiceTest.java      # Unit tests
+├── Dockerfile                           # Docker image definition
+├── docker-compose.yml                   # Multi-container setup
+├── postman-collection.json              # API test collection
+└── pom.xml                              # Maven dependencies
 ```
 
 ---
@@ -91,51 +107,80 @@ student-management/
 ### Prerequisites
 - Java 17
 - Docker Desktop
-- Postman (for testing)
+- Postman (for API testing)
+- Terraform (for AWS deployment)
+- AWS CLI (for cloud deployment)
 
-### Option 1 — Run with Docker Compose (Recommended)
+---
+
+### Option 1 — Run with Docker Compose (Recommended for Local)
 
 ```bash
 # Clone the repository
 git clone https://github.com/Arfat-k/student-management-api.git
 cd student-management-api
 
-# Build the JAR
+# Build the JAR file
 .\mvnw.cmd clean package -DskipTests
 
-# Start all containers
+# Start all containers (App + PostgreSQL + Redis)
 docker-compose up --build
 ```
 
-App will be running at: `http://localhost:8080`
+App runs at: `http://localhost:8080`
 
 ---
 
-### Option 2 — Run with Kubernetes
+### Option 2 — Deploy to AWS with Terraform
 
 ```bash
-# Apply all K8s files
+# Configure AWS credentials
+aws configure
+
+# Navigate to terraform folder
+cd terraform
+
+# Initialize Terraform
+terraform init
+
+# Preview what will be created
+terraform plan
+
+# Create AWS infrastructure
+terraform apply
+
+# App will be live at the output IP on port 8080
+
+# When done, destroy to avoid charges
+terraform destroy
+```
+
+---
+
+### Option 3 — Run with Kubernetes
+
+```bash
+# Deploy all services
 kubectl apply -f k8s/postgres-deployment.yaml
 kubectl apply -f k8s/redis-deployment.yaml
 kubectl apply -f k8s/app-deployment.yaml
 
-# Check pods are running
+# Check all pods are running
 kubectl get pods
 
-# Forward port to access app
+# Forward port for local access
 kubectl port-forward service/student-app 8080:8080
 ```
 
-App will be running at: `http://localhost:8080`
+App runs at: `http://localhost:8080`
 
 ---
 
-### Option 3 — Run Locally
+### Option 4 — Run Locally (without Docker)
 
-1. Make sure PostgreSQL is running on port `5432`
-2. Create database: `student_db`
-3. Update `application.properties` with your DB password
-4. Run:
+1. Install PostgreSQL and create database: `student_db`
+2. Update `src/main/resources/application.properties` with your DB password
+3. Run:
 
 ```bash
 .\mvnw.cmd spring-boot:run
@@ -145,17 +190,17 @@ App will be running at: `http://localhost:8080`
 
 ## 🔐 API Endpoints
 
-### Auth Endpoints (Public)
+### Auth Endpoints (No authentication required)
 
 | Method | URL | Description |
 |--------|-----|-------------|
-| POST | `/api/auth/register` | Register new user |
-| POST | `/api/auth/login` | Login & get JWT token |
+| POST | `/api/auth/register` | Register a new user |
+| POST | `/api/auth/login` | Login and receive JWT token |
 
-### Student Endpoints (Protected - requires JWT)
+### Student Endpoints (JWT token required)
 
-| Method | URL | Description | Role |
-|--------|-----|-------------|------|
+| Method | URL | Description | Role Required |
+|--------|-----|-------------|--------------|
 | GET | `/api/students` | Get all students | ADMIN, STUDENT |
 | GET | `/api/students/{id}` | Get student by ID | ADMIN, STUDENT |
 | POST | `/api/students` | Create new student | ADMIN |
@@ -164,13 +209,14 @@ App will be running at: `http://localhost:8080`
 
 ---
 
-## 📬 How to Test with Postman
+## 📬 Testing with Postman
 
-Import the included `postman-collection.json` file into Postman.
+Import `postman-collection.json` into Postman for ready-made requests.
 
-### Step 1 — Register:
-```json
-POST/api/auth/register
+### Step 1 — Register a user
+```
+POST http://localhost:8080/api/auth/register
+Body:
 {
     "username": "admin",
     "password": "admin123",
@@ -178,22 +224,30 @@ POST/api/auth/register
 }
 ```
 
-### Step 2 — Login:
-```json
-POST/api/auth/login
+### Step 2 — Login to get JWT token
+```
+POST http://localhost:8080/api/auth/login
+Body:
 {
     "username": "admin",
     "password": "admin123"
 }
+Response:
+{
+    "token": "eyJhbGci...",
+    "role": "ADMIN"
+}
 ```
-Copy the returned JWT token.
 
-### Step 3 — Use Token:
-In Postman → Authorization → Bearer Token → paste token
+### Step 3 — Use the token
+```
+In Postman → Authorization tab → Bearer Token → paste token
+```
 
-### Step 4 — Create Student:
-```json
-POST/api/students
+### Step 4 — Create a student
+```
+POST http://localhost:8080/api/students
+Body:
 {
     "firstName": "John",
     "lastName": "Doe",
@@ -207,43 +261,62 @@ POST/api/students
 
 ## 🔄 CI/CD Pipeline
 
-Every push to `main` branch automatically:
+Every push to the `main` branch automatically triggers:
 
 ```
-Push to GitHub
-      ↓
+Developer pushes code
+        ↓
 GitHub Actions triggered
-      ↓
-✅ Build with Maven
-✅ Run Tests
-✅ Build Docker Image
-✅ Push to Docker Hub
+        ↓
+1. Build project with Maven
+2. Run unit tests
+3. Build Docker image
+4. Push image to Docker Hub
 ```
 
 Docker Hub: [arfatk/student-management-api](https://hub.docker.com/r/arfatk/student-management-api)
 
 ---
 
+## ☁️ Terraform — Infrastructure as Code
+
+Instead of manually clicking in AWS Console, Terraform creates everything automatically:
+
+```bash
+terraform apply    # Creates EC2 + Security Group + installs Docker + runs app
+terraform destroy  # Deletes everything when done
+```
+
+### What Terraform creates:
+- AWS Security Group (opens ports 22, 8080)
+- EC2 t3.micro instance
+- Installs Docker & Docker Compose automatically
+- Pulls Docker image and starts all containers
+
+---
+
 ## ☸️ Kubernetes Commands
 
 ```bash
-# Deploy everything
+# Deploy all services
 kubectl apply -f k8s/
 
-# Check status
+# Check running pods
 kubectl get pods
+
+# Check services
 kubectl get services
 
-# View logs
+# View application logs
 kubectl logs deployment/student-app
 
-# Scale app to 3 instances
+# Scale to 3 instances
 kubectl scale deployment student-app --replicas=3
 
 # Forward port for local access
 kubectl port-forward service/student-app 8080:8080
 
-# Delete everything
+# Delete all deployments
 kubectl delete -f k8s/
 ```
 
@@ -255,13 +328,16 @@ kubectl delete -f k8s/
 .\mvnw.cmd test
 ```
 
-6 unit tests covering:
-- Get all students
-- Get student by ID
-- Get student by ID (not found)
-- Create student
-- Create student (duplicate email)
-- Delete student
+### Test Coverage:
+
+| Test | Description |
+|------|-------------|
+| getAllStudents | Returns list of all students |
+| getStudentById | Returns student by ID |
+| getStudentById_notFound | Throws exception for invalid ID |
+| createStudent | Saves and returns new student |
+| createStudent_emailExists | Throws exception for duplicate email |
+| deleteStudent | Deletes student successfully |
 
 ---
 
@@ -275,26 +351,35 @@ kubectl delete -f k8s/
 
 ---
 
-## ☸️ Kubernetes Resources
+## ⚙️ Environment Variables
 
-| Resource | Type | Replicas |
-|----------|------|---------|
-| student-app | Deployment | 1 (scalable) |
-| postgres | Deployment | 1 |
-| redis | Deployment | 1 |
-| student-app | NodePort Service | port 30080 |
+| Variable | Description |
+|----------|-------------|
+| `SPRING_DATASOURCE_URL` | PostgreSQL connection URL |
+| `SPRING_DATASOURCE_USERNAME` | Database username |
+| `SPRING_DATASOURCE_PASSWORD` | Database password |
+| `SPRING_DATA_REDIS_HOST` | Redis hostname |
+| `SPRING_DATA_REDIS_PORT` | Redis port (default: 6379) |
+| `JWT_SECRET` | Secret key for JWT signing |
+| `JWT_EXPIRATION` | Token expiry in milliseconds |
 
 ---
 
-## ⚙️ Environment Variables
+## 🏗️ Architecture
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `SPRING_DATASOURCE_URL` | jdbc:postgresql://postgres:5432/student_db | Database URL |
-| `SPRING_DATASOURCE_USERNAME` | postgres | DB username |
-| `SPRING_DATASOURCE_PASSWORD` | - | DB password |
-| `SPRING_DATA_REDIS_HOST` | redis | Redis host |
-| `SPRING_DATA_REDIS_PORT` | 6379 | Redis port |
+```
+Client (Postman/Browser)
+        ↓
+Spring Boot REST API (Port 8080)
+        ↓
+Spring Security → JWT Filter → Controller
+        ↓
+Service Layer (Business Logic + Redis Cache)
+        ↓
+Repository Layer (Spring Data JPA)
+        ↓
+PostgreSQL Database
+```
 
 ---
 
@@ -304,6 +389,7 @@ kubectl delete -f k8s/
 - GitHub: [@Arfat-k](https://github.com/Arfat-k)
 - Docker Hub: [arfatk](https://hub.docker.com/r/arfatk/student-management-api)
 - Repository: [student-management-api](https://github.com/Arfat-k/student-management-api)
+- Live API: http://18.204.23.153:8080
 
 ---
 
