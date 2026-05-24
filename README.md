@@ -69,7 +69,7 @@ src/main/java/com/example/student_management/
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Java 17
+- Java 17X
 - Docker Desktop
 - Postman (for testing)
 
